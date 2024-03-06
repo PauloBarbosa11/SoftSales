@@ -72,9 +72,9 @@ Cadastre um produto com os dados enviados no corpo da requisição.
 #### Exemplo de Resposta
 ```js
 {
-        "id": 1,
-        "nome": "Mouse Logitech G Pro X",
-        "valor": 700.00
+    "id": 1,
+    "nome": "Mouse Logitech G Pro X",
+    "valor": 700.00
 }
 ```
 
@@ -92,15 +92,15 @@ Cadastre um produto com os dados enviados no corpo da requisição.
 
 `GET` /produto/`{id}`
 
-Retorna os detalhes da categoria com o `id` informado no path.
+Retorna os detalhes do produto com o `id` informado no path.
 
 #### Exemplo de Resposta
 ```js
 // GET /produto/1
 {
-        "id": 1,
-        "nome": "Mouse Logitech G Pro X",
-        "valor": 700.00
+    "id": 1,
+    "nome": "Mouse Logitech G Pro X",
+    "valor": 700.00
 }
 ```
 
@@ -133,7 +133,7 @@ Apaga o produto com o `id` informado no path
 ### Atualizar Produto
 `PUT` /produto/`{id}`
 
-Altere os dados cadastrados do produto.
+Atualiza os dados do produto com o `id` informado no path, utilizando as informações do corpo da requisição
 
 #### Corpo da Requisição
 
@@ -155,9 +155,9 @@ Altere os dados cadastrados do produto.
 #### Exemplo de Resposta
 ```js
 {
-        "id": 1,
-        "nome": "Teclado Razer Huntsman Tournament Edition",
-        "valor": 1000.00
+    "id": 1,
+    "nome": "Teclado Razer Huntsman Tournament Edition",
+    "valor": 1000.00
 }
 ```
 
