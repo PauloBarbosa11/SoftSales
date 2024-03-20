@@ -1,11 +1,13 @@
 package br.com.fiap.softsales.controller;
 
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.NOT_FOUND;
+import static org.springframework.http.HttpStatus.NO_CONTENT;
+import static org.springframework.http.HttpStatus.OK;
+
 import java.util.List;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.softsales.model.Produto;
 import br.com.fiap.softsales.repository.ProdutoRepository;
@@ -26,8 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ProdutoController {
 
-    Logger log = LoggerFactory.getLogger(getClass());
-
     @Autowired
     ProdutoRepository repository;
 
@@ -37,60 +38,47 @@ public class ProdutoController {
     }
 
     @PostMapping
-    @ResponseStatus(code = HttpStatus.CREATED)
+    @ResponseStatus(CREATED)
     public Produto create(@RequestBody Produto produto) {
         log.info("cadastrando produto: {}", produto);
-        repository.save(produto);
-        return produto;
+        return repository.save(produto);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("{id}")
     public ResponseEntity<Produto> show( @PathVariable Long id){
         log.info("buscando produto com id {}", id);
 
-        var produtoEncontrado = repository.findById(id);
-
-        if(produtoEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        return ResponseEntity.ok(produtoEncontrado.get());
+        return repository
+                    .findById(id)
+                    .map(ResponseEntity::ok)
+                    .orElse(ResponseEntity.notFound().build()); 
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Object> destroy(@PathVariable Long id) {
+    @DeleteMapping("{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void destroy(@PathVariable Long id) {
         log.info("Apagando produto {}", id);
-
-        var produtoEncontrado = repository.findById(id);
-
-        if(produtoEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
-
-        repository.delete(produtoEncontrado.get());
-
-        return ResponseEntity.noContent().build();
+        verificarSeExisteProduto(id);
+        repository.deleteById(id);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<Produto> update(
-        @PathVariable Long id,
-        @RequestBody Produto produto
-    ){
-        log.info("Atualizando produto {} para {}", id, produto);
-       
-        var produtoEncontrado = repository.findById(id);
-        if(produtoEncontrado.isEmpty())
-            return ResponseEntity.notFound().build();
+    @PutMapping("{id}")
+    @ResponseStatus(OK)
+    public Produto update(@PathVariable Long id, @RequestBody Produto produto){
+        log.info("atualizando produto com id {} para {}", id, produto);
 
-        var produtoAntigo = produtoEncontrado.get();
+        verificarSeExisteProduto(id);
 
-        var produtoNovo = new Produto();
-        produtoNovo.setId(id);
-        produtoNovo.setNome(produto.getNome());
-        produtoNovo.setValor(produto.getValor());
+        produto.setId(id);
+        return repository.save(produto);
+    }
 
-        // adicionar produto nova
-        repository.save(produtoNovo);
-
-        return ResponseEntity.ok(produtoNovo);
+    private void verificarSeExisteProduto(Long id){
+        repository
+            .findById(id)
+            .orElseThrow(() -> new ResponseStatusException(
+                                    NOT_FOUND,
+                                    "id do produto não encontrado"
+                                    ));
     }
 }
