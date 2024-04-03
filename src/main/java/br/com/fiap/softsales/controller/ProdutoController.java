@@ -2,11 +2,11 @@ package br.com.fiap.softsales.controller;
 
 import static org.springframework.http.HttpStatus.CREATED;
 import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.NO_CONTENT;
-import static org.springframework.http.HttpStatus.OK;
+import static org.springframework.http.HttpStatus.NO_CONTENT;   
 
 import java.util.List;
 
+import org.springframework.ai.openai.OpenAiChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,11 +32,15 @@ public class ProdutoController {
     @Autowired
     ProdutoRepository repository;
 
+    @Autowired
+    OpenAiChatClient gpt;
+
     @GetMapping
     public List<Produto> index() {
         return repository.findAll();
     }
 
+    @SuppressWarnings("null")
     @PostMapping
     @ResponseStatus(CREATED)
     public Produto create(@RequestBody Produto produto) {
@@ -44,6 +48,7 @@ public class ProdutoController {
         return repository.save(produto);
     }
 
+    @SuppressWarnings("null")
     @GetMapping("{id}")
     public ResponseEntity<Produto> show( @PathVariable Long id){
         log.info("buscando produto com id {}", id);
@@ -52,8 +57,9 @@ public class ProdutoController {
                     .findById(id)
                     .map(ResponseEntity::ok)
                     .orElse(ResponseEntity.notFound().build()); 
-    }
+    }   
 
+    @SuppressWarnings("null")
     @DeleteMapping("{id}")
     @ResponseStatus(NO_CONTENT)
     public void destroy(@PathVariable Long id) {
@@ -62,17 +68,17 @@ public class ProdutoController {
         repository.deleteById(id);
     }
 
+
     @PutMapping("{id}")
-    @ResponseStatus(OK)
     public Produto update(@PathVariable Long id, @RequestBody Produto produto){
         log.info("atualizando produto com id {} para {}", id, produto);
 
         verificarSeExisteProduto(id);
-
         produto.setId(id);
         return repository.save(produto);
     }
 
+    @SuppressWarnings("null")
     private void verificarSeExisteProduto(Long id){
         repository
             .findById(id)
