@@ -6,7 +6,6 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 import java.util.List;
 
-import org.springframework.ai.openai.OpenAiChatClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,6 +21,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.softsales.model.Produto;
 import br.com.fiap.softsales.repository.ProdutoRepository;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @RestController
@@ -32,23 +32,18 @@ public class ProdutoController {
     @Autowired
     ProdutoRepository repository;
 
-    @Autowired
-    OpenAiChatClient gpt;
-
     @GetMapping
     public List<Produto> index() {
         return repository.findAll();
     }
 
-    @SuppressWarnings("null")
     @PostMapping
     @ResponseStatus(CREATED)
-    public Produto create(@RequestBody Produto produto) {
+    public Produto create(@RequestBody @Valid Produto produto) {
         log.info("cadastrando produto: {}", produto);
         return repository.save(produto);
     }
 
-    @SuppressWarnings("null")
     @GetMapping("{id}")
     public ResponseEntity<Produto> show( @PathVariable Long id){
         log.info("buscando produto com id {}", id);
@@ -59,7 +54,6 @@ public class ProdutoController {
                     .orElse(ResponseEntity.notFound().build()); 
     }   
 
-    @SuppressWarnings("null")
     @DeleteMapping("{id}")
     @ResponseStatus(NO_CONTENT)
     public void destroy(@PathVariable Long id) {
@@ -78,7 +72,6 @@ public class ProdutoController {
         return repository.save(produto);
     }
 
-    @SuppressWarnings("null")
     private void verificarSeExisteProduto(Long id){
         repository
             .findById(id)

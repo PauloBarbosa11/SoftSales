@@ -28,7 +28,6 @@ public class MovimentacaoController {
         return repository.findAll();
     }
 
-    @SuppressWarnings("null")
     @PostMapping
     @ResponseStatus(CREATED)
     public Movimentacao create(@RequestBody @Valid Movimentacao movimentacao){

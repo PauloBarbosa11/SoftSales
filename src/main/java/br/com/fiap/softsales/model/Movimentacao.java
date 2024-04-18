@@ -15,7 +15,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class Movimentacao {
+public class Movimentacao{
     @Id @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     
