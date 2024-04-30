@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>br.com.fiap</groupId>
-	<artifactId>fintrack</artifactId>
+	<artifactId>softsales</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>fintrack</name>
-	<description>API do WebApp Fin Track </description>
+	<name>SoftSales</name>
+	<description>API do WebApp SoftSales </description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
